@@ -20,8 +20,17 @@ public class StoreController :ControllerBase
         _context = context;
     }
 
+
     [HttpGet]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> GetAllStores()
+    {
+        var stores = await _context.Store.ToListAsync();
+        return Ok(stores);
+    }
+    
+
+    [HttpGet("{id}/pdf")]
+    public async Task<IActionResult> GetStorePdf(int id)
     {
         var store = await _context.Store
             .Include(s => s.Products)

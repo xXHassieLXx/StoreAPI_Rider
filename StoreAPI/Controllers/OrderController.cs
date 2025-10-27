@@ -20,11 +20,27 @@ namespace StoreAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Order>>> GetOrders()
         {
-            var orders  = await _context.Order
-                .Include(o => o.SystemUser)
+            var orders = await _context.Order
+                .Include(o=>o.SystemUser)
+                .Select(o=> new
+                { 
+                    Id = o.Id,
+                    Total = o.Total,
+                    CreatedAt = o.CreatedAt,
+                    User = new UserDTO
+                    {
+                        Id = o.SystemUser.Id,
+                        Email = o.SystemUser.Email,
+                        FirstName = o.SystemUser.FirstNaame,
+                        LastName = o.SystemUser.LastName,
+                    }
+                })
                 .ToListAsync();
+    
+            // _context.Order.FirstOrDefaultAsync(o=>o.Id == id);
             return Ok(orders);
         }
+
         
         [HttpPost]
         public async Task<ActionResult> CreateOrder(
